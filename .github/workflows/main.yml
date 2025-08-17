@@ -1,0 +1,38 @@
+name: Deploy SpiceRoots Website
+
+on:
+  push:
+    branches:
+      - main   # deploy only when pushing to main branch
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js (optional - only if you want to run build tools like minifiers)
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 18
+
+      # Step 3: Upload artifact for Pages
+      - name: Upload website files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./   # root folder contains index.html, CSS, JS etc.
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
